@@ -1,5 +1,5 @@
 class StringsConstant {
-  static const String nameApp = "Evodie";
+  static const String AppName = "Evodie";
   static const String sommeactuelleConst = "Somme actuelle";
   static const String proprietaire = "Propriétaire";
   static const String vendeur = "Vendeur";
