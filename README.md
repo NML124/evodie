@@ -12,11 +12,11 @@ Evodie permet de :
 - Réaliser une fiche de compte mensuel et annuel
 
 
-### Source de financement
+## Source de financement
 Nous vivons actuellement principalement des dons, si vous voulez nous soutenir, vous pouvez le faire via :
 - carte Visa Mastercard :4865 5500 2410 8656
 - Airtel money : 0975719163
 
 
-#### NEXT
+## NEXT
 Si vous êtes intéressés par ce projet, vous pourrez nous contacter directement via le numéro ci-haut ou nous envoyer un mail à langakabonjojospin@gmail.com .
