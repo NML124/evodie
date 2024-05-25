@@ -61,6 +61,8 @@ class StringsConstant {
   static const String annuler = "Annuler";
   static const String payer = "Payer";
 
+  static const String logoPath= "/";
+
   
 
 }
