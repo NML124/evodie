@@ -1,6 +1,6 @@
 {
-    "name": "evodie",
-    "short_name": "evodie",
+    "name": "gestion_depot",
+    "short_name": "gestion_depot",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

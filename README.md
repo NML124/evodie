@@ -1,22 +1,16 @@
-# evodie
+# gestion_depot
 
-Evodie est une application mobile et logiciel Windows pour la gestion des magasins tant pour la vente que les commandes.
+A new Flutter project.
 
-Avec Evodie, vous pourrez centraliser tous vos magasins en un seul et voir une vue d'ensemble de tous
+## Getting Started
 
-## Fonctionalités
+This project is a starting point for a Flutter application.
 
-Evodie permet de :
-- Gérer les processus de commande
-- Suivre les achats journaliers, mensuels et annuels
-- Réaliser une fiche de compte mensuel et annuel
+A few resources to get you started if this is your first Flutter project:
 
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-## Source de financement
-Nous vivons actuellement principalement des dons, si vous voulez nous soutenir, vous pouvez le faire via :
-- carte Visa Mastercard :4865 5500 2410 8656
-- Airtel money : 0975719163
-
-
-## NEXT
-Si vous êtes intéressés par ce projet, vous pourrez nous contacter directement via le numéro ci-haut ou nous envoyer un mail à langakabonjojospin@gmail.com .
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
