@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gestion_depot/Constants/colors.dart';
+import 'package:gestion_depot/Produits_Options/produits_options.dart';
+import 'package:gestion_depot/screens/commande.dart';
 import 'package:gestion_depot/screens/vente.dart';
 
 void main() {
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: "Gestion Depot",
       debugShowCheckedModeBanner: false,
-      home: PageVentes(),
+      home: Vente(),
     );
   }
 }
@@ -30,16 +32,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Color green = Color.fromARGB(255, 0, 155, 140);
-  List<String> _options = ['Mensuel', 'Hebdomadaire', 'Annuel'];
-  String? _selectedOption;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          ListTile(
+          const ListTile(
             leading: CircleAvatar(
               backgroundColor: ColorsConstant.green,
             ),
@@ -59,14 +57,16 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           ListTile(
-            title: Text(
+            title: const Text(
               "Somme actuelle",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-            subtitle: Text(
+            subtitle: const Text(
               "20.000.000 Fc",
               style: TextStyle(
-                  fontSize: 30, fontWeight: FontWeight.bold, color: green),
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  color: ColorsConstant.green),
             ),
             trailing: Container(
               padding: EdgeInsets.symmetric(horizontal: 5),
@@ -75,18 +75,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 borderRadius: BorderRadius.circular(15),
               ),
               child: DropdownButton(
-                items: _options.map((String value) {
+                items: ProduitsOptions.listOptions.map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
                   );
                 }).toList(),
-                value: _selectedOption,
+                value: ProduitsOptions.selectedOption,
                 onChanged: (String? newValue) {
                   setState(() {
-                    _selectedOption = newValue;
+                    ProduitsOptions.setSelectedOption(newValue);
                   });
                 },
+                icon: const Icon(
+                  Icons.keyboard_arrow_down_sharp,
+                ),
                 iconSize: 30,
                 style: TextStyle(fontSize: 18),
                 underline: SizedBox(),
