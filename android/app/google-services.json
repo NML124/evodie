@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "433841503923",
+    "project_id": "gestion-de-depot",
+    "storage_bucket": "gestion-de-depot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:433841503923:android:d2a2f806d2125f0fc5fac6",
+        "android_client_info": {
+          "package_name": "com.Jokalan.gestion_depot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBToAN1cBh7c8AdpSHm7e8xGcBvqhdW2hw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
