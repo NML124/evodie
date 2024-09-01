@@ -1,8 +1,8 @@
+import 'package:evodie/Constants/colors.dart';
+import 'package:evodie/Produits_Options/produits_options.dart';
+import 'package:evodie/widgets/customElevatedButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gestion_depot/Constants/colors.dart';
-import 'package:gestion_depot/Produits_Options/produits_options.dart';
-import 'package:gestion_depot/widgets/customElevatedButton.dart';
 
 class Vente extends StatefulWidget {
   const Vente({super.key});
