@@ -1,5 +1,5 @@
+import 'package:evodie/Constants/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:gestion_depot/Constants/colors.dart';
 
 class CustomElevatedButton extends StatelessWidget {
   final String buttonText;

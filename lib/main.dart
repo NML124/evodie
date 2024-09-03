@@ -1,8 +1,7 @@
+import 'package:evodie/Constants/colors.dart';
+import 'package:evodie/Produits_Options/produits_options.dart';
+import 'package:evodie/screens/vente.dart';
 import 'package:flutter/material.dart';
-import 'package:gestion_depot/Constants/colors.dart';
-import 'package:gestion_depot/Produits_Options/produits_options.dart';
-import 'package:gestion_depot/screens/commande.dart';
-import 'package:gestion_depot/screens/vente.dart';
 
 void main() {
   runApp(const MyApp());
