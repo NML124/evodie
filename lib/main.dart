@@ -1,5 +1,6 @@
 import 'package:evodie/Constants/colors.dart';
 import 'package:evodie/Produits_Options/produits_options.dart';
+import 'package:evodie/screens/profile.dart';
 import 'package:evodie/screens/vente.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: "Gestion Depot",
       debugShowCheckedModeBanner: false,
-      home: Vente(),
+      home: Profile(),
     );
   }
 }
