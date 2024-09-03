@@ -15,15 +15,15 @@ class CustomElevatedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: ColorsConstant.green, // Couleur de fond
         foregroundColor: ColorsConstant.white, // Couleur du texte
-        padding: EdgeInsets.symmetric(
-            horizontal: 25, vertical: 18), // Padding du bouton
+        padding: const EdgeInsets.symmetric(
+            horizontal: 15, vertical: 10), // Padding du bouton
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10), // Coins arrondis
         ),
       ),
       child: Text(
         buttonText, // Texte du bouton
-        style: TextStyle(fontSize: 23), // Style du texte
+        style: TextStyle(fontSize: 18), // Style du texte
       ),
     );
   }

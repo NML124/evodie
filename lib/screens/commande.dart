@@ -97,7 +97,12 @@ class _CommandeState extends State<Commande> {
                                     .map((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
-                                    child: Text(value),
+                                    child: Text(
+                                      value,
+                                      style: TextStyle(
+                                        color: ColorsConstant.black,
+                                      ),
+                                    ),
                                   );
                                 }).toList(),
                                 value: ProduitsOptions.selectedProduit,

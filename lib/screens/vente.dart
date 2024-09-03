@@ -95,7 +95,10 @@ class _VenteState extends State<Vente> {
                               ProduitsOptions.listeProduits.map((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
-                              child: Text(value),
+                              child: Text(
+                                value,
+                                style: TextStyle(color: ColorsConstant.black),
+                              ),
                             );
                           }).toList(),
                           value: ProduitsOptions.selectedProduit,
@@ -173,9 +176,13 @@ class _VenteState extends State<Vente> {
                           hint: Text('Type'),
                           items: ProduitsOptions.listeTypes.map((String value) {
                             return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
+                                value: value,
+                                child: Text(
+                                  value,
+                                  style: const TextStyle(
+                                    color: ColorsConstant.black,
+                                  ),
+                                ));
                           }).toList(),
                           value: ProduitsOptions.selectedType,
                           onChanged: (String? newValue) {
