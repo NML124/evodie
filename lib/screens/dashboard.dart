@@ -54,10 +54,16 @@ class _DashBoardPageState extends State<DashBoardPage> {
                   ),
                 );
               },
-              child: const Icon(
-                Icons.settings_outlined, // l'icône que vous voulez afficher
-                size: 35,
-                color: Colors.black, // couleur de l'icône
+              child: Container(
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(width: 2, color: ColorsConstant.black)),
+                child: const Icon(
+                  Icons.settings_outlined, // l'icône que vous voulez afficher
+                  size: 35,
+                  color: Colors.black, // couleur de l'icône
+                ),
               ),
             ),
           ),
