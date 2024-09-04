@@ -2,8 +2,8 @@ import 'package:evodie/Constants/colors.dart';
 import 'package:evodie/Produits_Options/produits_options.dart';
 import 'package:evodie/screens/profile.dart';
 import 'package:flutter/material.dart';
-//import 'package:syncfusion_flutter_charts/charts.dart';
-//import 'package:syncfusion_flutter_charts/sparkcharts.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 class DashBoardPage extends StatefulWidget {
   const DashBoardPage({super.key, required this.title});
@@ -15,7 +15,7 @@ class DashBoardPage extends StatefulWidget {
 }
 
 class _DashBoardPageState extends State<DashBoardPage> {
-  /* List<_SalesData> data = [
+  List<_SalesData> data = [
     _SalesData('Lun', 25),
     _SalesData('Mar', 30),
     _SalesData('Mer', 35),
@@ -23,7 +23,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
     _SalesData('Ven', 45),
     _SalesData('Sam', 50),
     _SalesData('Dim', 55),
-  ]; */
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
               "Propriétaire",
               style: TextStyle(fontSize: 15),
             ),
-            trailing: GestureDetector.new(
+            trailing: GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
@@ -60,9 +60,9 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     shape: BoxShape.circle,
                     border: Border.all(width: 2, color: ColorsConstant.black)),
                 child: const Icon(
-                  Icons.settings_outlined, // l'icône que vous voulez afficher
+                  Icons.settings_outlined,
                   size: 35,
-                  color: Colors.black, // couleur de l'icône
+                  color: Colors.black,
                 ),
               ),
             ),
@@ -116,55 +116,59 @@ class _DashBoardPageState extends State<DashBoardPage> {
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.015,
           ),
-          /* Container(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              children: [
-                SfCartesianChart(
-                  primaryXAxis: CategoryAxis(),
-                  title: ChartTitle(
-                    text: 'Ventes de la semaine',
-                  ),
-                  legend: Legend(isVisible: true),
-                  tooltipBehavior: TooltipBehavior(enable: true),
-                  series: <CartesianSeries<_SalesData, String>>[
-                    LineSeries<_SalesData, String>(
-                      dataSource: data,
-                      xValueMapper: (_SalesData sales, _) => sales.day,
-                      yValueMapper: (_SalesData sales, _) => sales.sales,
-                      name: 'Sales',
-                      dataLabelSettings: DataLabelSettings(isVisible: true),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SfSparkAreaChart.custom(
-                      trackball: SparkChartTrackball(
-                          activationMode: SparkChartActivationMode.tap),
-                      marker: SparkChartMarker(
-                        displayMode: SparkChartMarkerDisplayMode.all,
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SfCartesianChart(
+                      primaryXAxis: CategoryAxis(),
+                      title: ChartTitle(
+                        text: 'Ventes de la semaine',
                       ),
-                      labelDisplayMode: SparkChartLabelDisplayMode.all,
-                      xValueMapper: (int index) => data[index].day,
-                      yValueMapper: (int index) => data[index].sales,
-                      dataCount: 7,
+                      legend: Legend(isVisible: true),
+                      tooltipBehavior: TooltipBehavior(enable: true),
+                      series: <CartesianSeries<_SalesData, String>>[
+                        LineSeries<_SalesData, String>(
+                          dataSource: data,
+                          xValueMapper: (_SalesData sales, _) => sales.day,
+                          yValueMapper: (_SalesData sales, _) => sales.sales,
+                          name: 'Sales',
+                          dataLabelSettings: DataLabelSettings(isVisible: true),
+                        ),
+                      ],
                     ),
                   ),
-                )
-              ],
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SfSparkAreaChart.custom(
+                        trackball: SparkChartTrackball(
+                            activationMode: SparkChartActivationMode.tap),
+                        marker: SparkChartMarker(
+                          displayMode: SparkChartMarkerDisplayMode.all,
+                        ),
+                        labelDisplayMode: SparkChartLabelDisplayMode.all,
+                        xValueMapper: (int index) => data[index].day,
+                        yValueMapper: (int index) => data[index].sales,
+                        dataCount: 7,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ) */
+          ),
         ],
       ),
     );
   }
 }
 
-/* class _SalesData {
+class _SalesData {
   _SalesData(this.day, this.sales);
 
   final String day;
   final int sales;
-} */
+}
