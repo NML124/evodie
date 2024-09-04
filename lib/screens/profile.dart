@@ -1,4 +1,6 @@
 import 'package:evodie/Constants/colors.dart';
+import 'package:evodie/screens/dashboard.dart';
+import 'package:evodie/screens/vente.dart';
 import 'package:evodie/widgets/customElevatedButton.dart';
 import 'package:flutter/material.dart';
 
@@ -23,12 +25,19 @@ class _ProfileState extends State<Profile> {
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pop(
+                            context,
+                          );
+                        },
                         icon: const Icon(
                           Icons.arrow_back,
                           color: Colors.black,
-                          size: 40,
+                          size: 35,
                         ),
+                      ),
+                      const SizedBox(
+                        width: 10,
                       ),
                       const Text(
                         'Profile',
