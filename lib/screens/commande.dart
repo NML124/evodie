@@ -24,32 +24,10 @@ class _CommandeState extends State<Commande> {
             Container(
               child: Column(
                 children: [
-                  const ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: ColorsConstant.green,
-                    ),
-                    title: Text(
-                      "Jeanine Namwana",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "Propriétaire",
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    trailing: Icon(
-                      Icons.settings,
-                    ),
-                  ),
                   Container(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // identité du proprietaire
-
-                        SizedBox(height: 20),
                         // affichage de la ligne avec le text Vente
                         const Row(
                           children: [

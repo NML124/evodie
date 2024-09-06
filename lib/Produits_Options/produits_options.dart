@@ -8,7 +8,7 @@ class ProduitsOptions {
     'Pepsi'
   ];
   static List<String> _listeTypes = ['Bouteille(s)', 'Paquet(s)'];
-  static List<String> _listOptions = ['Mensuel', 'Hebdomadaire', 'Annuel'];
+  static List<String> _listOptions = ['Mensuel', 'Hebdo', 'Annuel'];
   static String? _selectedProduit;
   static String? _selectedType;
   static String? _selectedOption;
