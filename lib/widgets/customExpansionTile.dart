@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:evodie/Constants/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -41,14 +42,21 @@ class CustomExpansionTile extends StatelessWidget {
         ),
         children: items.map((item) {
           return ListTile(
-            title: Text(item.name),
-            subtitle: Text('Prise le ${item.date}'),
+            title: AutoSizeText(
+              item.name,
+              maxLines: 1,
+            ),
+            subtitle: AutoSizeText(
+              'Prise le ${item.date}',
+              maxLines: 1,
+            ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
+                AutoSizeText(
                   item.amount,
                   style: const TextStyle(fontWeight: FontWeight.bold),
+                  maxLines: 1,
                 ),
                 const SizedBox(width: 10),
                 IconButton(

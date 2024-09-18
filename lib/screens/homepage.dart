@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:evodie/Constants/colors.dart';
 import 'package:evodie/screens/commande.dart';
 import 'package:evodie/screens/dashboard.dart';
@@ -41,16 +42,18 @@ class _HomePageState extends State<HomePage> {
             title: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                const AutoSizeText(
                   "Jeanine Namwana",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
+                  maxLines: 1,
                 ),
-                const Text(
+                const AutoSizeText(
                   "Propriétaire",
                   style: TextStyle(fontSize: 15),
+                  maxLines: 1,
                 ),
               ],
             ),

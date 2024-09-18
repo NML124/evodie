@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 class CustomListTile extends StatelessWidget {
@@ -35,21 +36,23 @@ class CustomListTile extends StatelessWidget {
             color: colorTitle,
             size: 23,
           ),
-          title: Text(
+          title: AutoSizeText(
             title,
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
               color: colorTitle,
             ),
+            maxLines: 1,
           ),
-          subtitle: Text(
+          subtitle: AutoSizeText(
             subtitle,
             style: TextStyle(
               fontSize: 13,
               color: colorSubtitle,
               fontWeight: FontWeight.bold,
             ),
+            maxLines: 1,
           ),
         ),
       ),

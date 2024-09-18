@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:evodie/widgets/customExpansionTile.dart';
 import 'package:flutter/material.dart';
 import 'package:evodie/Constants/colors.dart';
@@ -48,12 +49,13 @@ class _DetteState extends State<Dette> {
                 const SizedBox(
                   width: 10,
                 ),
-                const Text(
+                const AutoSizeText(
                   'Dette',
                   style: TextStyle(
                       color: ColorsConstant.black,
                       fontSize: 30,
                       fontWeight: FontWeight.bold),
+                  maxLines: 1,
                 ),
               ],
             ),
@@ -67,16 +69,18 @@ class _DetteState extends State<Dette> {
                 horizontal: 8,
                 vertical: 0,
               ),
-              title: const Text(
+              title: const AutoSizeText(
                 "Dette totale",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                maxLines: 1,
               ),
-              subtitle: const Text(
+              subtitle: const AutoSizeText(
                 "12.080.000 Fc",
                 style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                     color: ColorsConstant.green),
+                maxLines: 1,
               ),
               trailing: Container(
                 width: MediaQuery.of(context).size.width * 0.35,
@@ -86,15 +90,19 @@ class _DetteState extends State<Dette> {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: DropdownButton(
-                  hint: const Text(
+                  hint: const AutoSizeText(
                     'Type',
                     style: TextStyle(color: ColorsConstant.gray),
+                    maxLines: 1,
                   ),
                   items: ProduitsOptions.listOptions.map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
-                      child: Text(value,
-                          style: TextStyle(color: ColorsConstant.black)),
+                      child: AutoSizeText(
+                        value,
+                        style: TextStyle(color: ColorsConstant.black),
+                        maxLines: 1,
+                      ),
                     );
                   }).toList(),
                   value: ProduitsOptions.selectedOption,
@@ -160,7 +168,7 @@ class _DetteState extends State<Dette> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  const AutoSizeText(
                     "Débiteurs",
                     style: TextStyle(
                         fontSize: 20,
@@ -173,126 +181,133 @@ class _DetteState extends State<Dette> {
                   ),
                   Expanded(
                     child: ListView.builder(
-                        itemCount: 5,
-                        itemBuilder: (context, index) {
-                          return CustomExpansionTile(
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      backgroundColor: const Color(
-                                          0xFFFFFDF9), // Couleur de fond (adaptée à l'image)
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            'Paiement dette',
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
+                      itemCount: 5,
+                      itemBuilder: (context, index) {
+                        return CustomExpansionTile(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    backgroundColor: const Color(
+                                        0xFFFFFDF9), // Couleur de fond (adaptée à l'image)
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const AutoSizeText(
+                                          'Paiement dette',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                          ),
+                                          maxLines: 1,
+                                        ),
+                                        const SizedBox(height: 10),
+                                        const AutoSizeText(
+                                          'Somme actuelle à payer : 70.000 Fc',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                          ),
+                                          maxLines: 1,
+                                        ),
+                                        const SizedBox(height: 10),
+                                        const AutoSizeText(
+                                          'Paiement de :',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black,
+                                          ),
+                                          maxLines: 1,
+                                        ),
+                                        TextField(
+                                          decoration: InputDecoration(
+                                            hintText: 'Somme payée',
+                                            hintStyle: const TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                            border: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey.shade400),
                                             ),
                                           ),
-                                          const SizedBox(height: 10),
-                                          const Text(
-                                            'Somme actuelle à payer : 70.000 Fc',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 10),
-                                          const Text(
-                                            'Paiement de :',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          TextField(
-                                            decoration: InputDecoration(
-                                              hintText: 'Somme payée',
-                                              hintStyle: const TextStyle(
-                                                color: Colors.grey,
-                                              ),
-                                              border: UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color:
-                                                        Colors.grey.shade400),
-                                              ),
-                                            ),
-                                            keyboardType: TextInputType.number,
-                                          ),
-                                          const SizedBox(height: 20),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  foregroundColor:
-                                                      ColorsConstant.white,
-                                                  backgroundColor:
-                                                      ColorsConstant.red,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
+                                          keyboardType: TextInputType.number,
+                                        ),
+                                        const SizedBox(height: 20),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                foregroundColor:
+                                                    ColorsConstant.white,
+                                                backgroundColor:
+                                                    ColorsConstant.red,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
                                                 ),
-                                                child: const Text('Annuler'),
                                               ),
-                                              const SizedBox(width: 10),
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  // Logique de paiement ici
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  foregroundColor:
-                                                      ColorsConstant.white,
-                                                  backgroundColor:
-                                                      ColorsConstant.green,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
+                                              child: const AutoSizeText(
+                                                'Annuler',
+                                                maxLines: 1,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                // Logique de paiement ici
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                foregroundColor:
+                                                    ColorsConstant.white,
+                                                backgroundColor:
+                                                    ColorsConstant.green,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
                                                 ),
-                                                child: const Text('Payer'),
                                               ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  });
-                            },
-                            title: 'Personne ${index + 1}',
-                            amount: '12.000.000 Fc',
-                            items: const [
-                              ExpansionTileItem(
-                                name: 'FIESTA',
-                                amount: '70.000 Fc',
-                                date: '12 septembre 2024',
-                              ),
-                              ExpansionTileItem(
-                                name: 'Azzur',
-                                amount: '10.000 Fc',
-                                date: '10 octobre 2024',
-                              ),
-                            ],
-                          );
-                        }),
+                                              child: const AutoSizeText(
+                                                'Payer',
+                                                maxLines: 1,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                });
+                          },
+                          title: 'Personne ${index + 1}',
+                          amount: '12.000.000 Fc',
+                          items: const [
+                            ExpansionTileItem(
+                              name: 'FIESTA',
+                              amount: '70.000 Fc',
+                              date: '12 septembre 2024',
+                            ),
+                            ExpansionTileItem(
+                              name: 'Azzur',
+                              amount: '10.000 Fc',
+                              date: '10 octobre 2024',
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),

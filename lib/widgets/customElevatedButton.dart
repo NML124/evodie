@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:evodie/Constants/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -21,9 +22,11 @@ class CustomElevatedButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(10), // Coins arrondis
         ),
       ),
-      child: Text(
+      child: AutoSizeText(
         buttonText, // Texte du bouton
-        style: TextStyle(fontSize: 18), // Style du texte
+        style: TextStyle(fontSize: 18),
+        // Style du texte
+        maxLines: 1,
       ),
     );
   }

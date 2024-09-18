@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:evodie/Constants/colors.dart';
 import 'package:evodie/Produits_Options/produits_options.dart';
 import 'package:evodie/widgets/customElevatedButton.dart';
@@ -40,13 +41,14 @@ class _CommandeState extends State<Commande> {
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text(
+                              child: AutoSizeText(
                                 'COMMANDE',
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: ColorsConstant.black,
                                 ),
+                                maxLines: 1,
                               ),
                             ),
                             Expanded(
@@ -60,29 +62,32 @@ class _CommandeState extends State<Commande> {
                         SizedBox(height: 20),
                         Row(
                           children: [
-                            const Text(
+                            const AutoSizeText(
                               "Produit:",
                               style: TextStyle(
                                 fontSize: 20,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
                               ),
+                              maxLines: 1,
                             ),
                             SizedBox(width: 10),
                             Expanded(
                               child: DropdownButtonFormField(
-                                items: ProduitsOptions.listeProduits
-                                    .map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(
-                                      value,
-                                      style: TextStyle(
-                                        color: ColorsConstant.black,
+                                items: ProduitsOptions.listeProduits.map(
+                                  (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: AutoSizeText(
+                                        value,
+                                        style: const TextStyle(
+                                          color: ColorsConstant.black,
+                                        ),
+                                        maxLines: 1,
                                       ),
-                                    ),
-                                  );
-                                }).toList(),
+                                    );
+                                  },
+                                ).toList(),
                                 value: ProduitsOptions.selectedProduit,
                                 onChanged: (String? newValue) {
                                   setState(() {
@@ -106,9 +111,10 @@ class _CommandeState extends State<Commande> {
                                   Icons.keyboard_arrow_down_sharp,
                                   color: Colors.black,
                                 ),
-                                hint: const Text(
+                                hint: const AutoSizeText(
                                   "produit commandé",
                                   style: TextStyle(color: Colors.grey),
+                                  maxLines: 1,
                                 ),
                               ),
                             ),
@@ -117,13 +123,14 @@ class _CommandeState extends State<Commande> {
                         SizedBox(height: 20),
                         Row(
                           children: [
-                            const Text(
+                            const AutoSizeText(
                               "Prix(franc):",
                               style: TextStyle(
                                 fontSize: 20,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
                               ),
+                              maxLines: 1,
                             ),
                             const SizedBox(width: 10),
                             Expanded(
@@ -152,13 +159,14 @@ class _CommandeState extends State<Commande> {
                         SizedBox(height: 20),
                         Row(
                           children: [
-                            const Text(
+                            const AutoSizeText(
                               "Quantité:",
                               style: TextStyle(
                                 fontSize: 20,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
                               ),
+                              maxLines: 1,
                             ),
                             const SizedBox(width: 10),
                             Expanded(
@@ -190,7 +198,10 @@ class _CommandeState extends State<Commande> {
                 ],
               ),
             ),
-            CustomElevatedButton(buttonText: "Enregistrer", onPressed: () {})
+            CustomElevatedButton(
+              buttonText: "Enregistrer",
+              onPressed: () {},
+            )
           ],
         ),
       ),
