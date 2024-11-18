@@ -71,7 +71,7 @@ class _AuthPageState extends State<AuthPage> {
               ));
             } else {
               print('Erreur lors de l\'ajout dans la table utilisateur');
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content:
                     Text("Erreur lors de l'ajout dans la table utilisateur"),
               ));
@@ -79,6 +79,9 @@ class _AuthPageState extends State<AuthPage> {
           }
         } catch (e) {
           print('Erreur lors de l\'inscription: $e');
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Erreur lors de l'inscription: $e"),
+          ));
         }
       }
     } catch (e) {
