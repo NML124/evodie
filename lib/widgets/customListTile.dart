@@ -21,7 +21,7 @@ class CustomListTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.075,
+        height: MediaQuery.of(context).size.height * 0.068,
         width: MediaQuery.of(context).size.width * 0.35,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),

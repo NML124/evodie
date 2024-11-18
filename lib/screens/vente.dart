@@ -4,6 +4,7 @@ import 'package:evodie/Produits_Options/produits_options.dart';
 import 'package:evodie/widgets/customElevatedButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Vente extends StatefulWidget {
   const Vente({super.key});
@@ -13,8 +14,280 @@ class Vente extends StatefulWidget {
 }
 
 class _VenteState extends State<Vente> {
-  bool isChecked = false;
+  final SupabaseClient supabase = Supabase.instance.client;
+  final TextEditingController _quantiteController = TextEditingController();
+  final TextEditingController _nomController = TextEditingController();
+  final TextEditingController _prenomController = TextEditingController();
+  final TextEditingController _montantController = TextEditingController();
+
+  bool isLoading = true;
   bool _isVisible = false;
+  bool isSubmitting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProduits();
+  }
+
+  Future<void> fetchProduits() async {
+    try {
+      await ProduitsOptions.fetchProduits(supabase);
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Erreur lors de la récupération des produits: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> insertVente() async {
+    try {
+      setState(() {
+        isSubmitting = true; // Commence le chargement
+      });
+
+      final currentUser = supabase.auth.currentUser;
+      if (currentUser == null) {
+        setState(() {
+          isSubmitting =
+              false; // Terminer le chargement si l'utilisateur n'est pas connecté
+        });
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content:
+              Text("Veuillez vous connecter avant d'enregistrer une vente."),
+        ));
+        return;
+      }
+
+      final String selectedProduit = ProduitsOptions.selectedProduit ?? '';
+      final int quantiteVendu = int.tryParse(_quantiteController.text) ?? 0;
+      final String selectedType = ProduitsOptions.selectedType ?? '';
+
+      if (selectedProduit.isEmpty ||
+          quantiteVendu <= 0 ||
+          selectedType.isEmpty) {
+        setState(() {
+          isSubmitting =
+              false; // Terminer le chargement si les champs sont invalides
+        });
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Veuillez remplir tous les champs obligatoires."),
+        ));
+        return;
+      }
+
+      final produitId = await getProduitId(selectedProduit, supabase);
+      if (produitId == null) {
+        setState(() {
+          isSubmitting =
+              false; // Terminer le chargement si le produit est introuvable
+        });
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Produit introuvable."),
+        ));
+        return;
+      }
+
+      int? detteId;
+      if (_isVisible) {
+        if (_nomController.text.isEmpty ||
+            _prenomController.text.isEmpty ||
+            (_montantController.text.isEmpty ||
+                int.tryParse(_montantController.text) == null)) {
+          setState(() {
+            isSubmitting =
+                false; // Terminer le chargement si les champs de la dette sont invalides
+          });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Veuillez remplir tous les champs de la dette."),
+          ));
+          return;
+        }
+
+        final debtResponse = await supabase.from('dettes').insert({
+          'produit_id': produitId,
+          'nom_client': _nomController.text,
+          'prenom_client': _prenomController.text,
+          'montant_dette': int.tryParse(_montantController.text) ?? 0,
+          'rembourse': false,
+          'utilisateur_id': currentUser.id,
+        }).select();
+
+        if (debtResponse.isEmpty) {
+          setState(() {
+            isSubmitting =
+                false; // Terminer le chargement si l'insertion de la dette échoue
+          });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Erreur lors de l'enregistrement de la dette."),
+          ));
+          return;
+        }
+
+        detteId = debtResponse[0]['id'] as int?;
+      }
+
+      final venteResponse = await supabase.from('ventes').insert({
+        'produit_id': produitId,
+        'quantite_vendu': quantiteVendu,
+        'type_vente': selectedType,
+        'utilisateur_id': currentUser.id,
+        'dette_id': detteId,
+      }).select();
+
+      if (venteResponse.isNotEmpty) {
+        setState(() {
+          isSubmitting =
+              false; // Terminer le chargement lorsque l'insertion est réussie
+        });
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Vente enregistrée avec succès."),
+        ));
+        resetFields();
+      } else {
+        setState(() {
+          isSubmitting =
+              false; // Terminer le chargement en cas d'erreur d'insertion
+        });
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Erreur lors de l'enregistrement de la vente."),
+        ));
+      }
+    } catch (e) {
+      setState(() {
+        isSubmitting = false; // Terminer le chargement en cas d'exception
+      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Erreur: $e"),
+      ));
+    }
+  }
+
+  Future<int?> getProduitId(String nomProduit, SupabaseClient supabase) async {
+    final utilisateurId = supabase.auth.currentUser?.id;
+
+    if (utilisateurId == null) {
+      return null;
+    }
+
+    try {
+      final response = await supabase
+          .from('produits')
+          .select('id')
+          .eq('nom_produit', nomProduit)
+          .eq('utilisateur_id', utilisateurId)
+          .limit(1);
+
+      if (response.isNotEmpty) {
+        return response[0]['id'] as int?;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  void resetFields() {
+    setState(() {
+      _quantiteController.clear();
+      _nomController.clear();
+      _prenomController.clear();
+      _montantController.clear();
+      ProduitsOptions.setSelectedProduit(null);
+      ProduitsOptions.setSelectedType(null);
+      _isVisible = false;
+    });
+  }
+
+  void showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: const Text("Confirmer l'enregistrement"),
+              content: isSubmitting
+                  ? SizedBox(
+                      height: MediaQuery.of(context).size.height *
+                          0.15, // Hauteur similaire au contenu précédent
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                ColorsConstant.green),
+                          ),
+                          SizedBox(height: 20),
+                          Text("Traitement en cours..."),
+                        ],
+                      ),
+                    )
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                            "Produit: ${ProduitsOptions.selectedProduit ?? 'N/A'}"),
+                        Text("Quantité: ${_quantiteController.text}"),
+                        Text("Type: ${ProduitsOptions.selectedType ?? 'N/A'}"),
+                        if (_isVisible) ...[
+                          const SizedBox(height: 10),
+                          Text("Nom du débiteur: ${_nomController.text}"),
+                          Text("Prénom du débiteur: ${_prenomController.text}"),
+                          Text(
+                              "Montant de la dette: ${_montantController.text}"),
+                        ],
+                      ],
+                    ),
+              actions: [
+                TextButton(
+                  onPressed: isSubmitting ? null : () => Navigator.pop(context),
+                  child: const Text("Annuler"),
+                ),
+                ElevatedButton(
+                  onPressed: isSubmitting
+                      ? null
+                      : () async {
+                          setDialogState(() {
+                            isSubmitting = true; // Active le spinner
+                          });
+
+                          // Appelez la méthode insertVente()
+                          await insertVente();
+
+                          setDialogState(() {
+                            isSubmitting = false; // Désactive le spinner
+                          });
+
+                          Navigator.pop(
+                              context); // Ferme le dialogue après l'opération
+                        },
+                  child: isSubmitting
+                      ? const Text("Traitement en cours...")
+                      : const Text("Confirmer"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      barrierDismissible:
+          false, // Empêche de fermer le dialogue en cliquant en dehors
+    );
+  }
+
+  void dispose() {
+    _nomController.dispose();
+    _prenomController.dispose();
+    _quantiteController.dispose();
+    _montantController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +302,7 @@ class _VenteState extends State<Vente> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // affichage de la ligne avec le text Vente
+                  // affichage de la ligne avec le texte Vente
                   const Row(
                     children: [
                       Expanded(
@@ -39,7 +312,7 @@ class _VenteState extends State<Vente> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
                         child: AutoSizeText(
                           'VENTE',
                           style: TextStyle(
@@ -59,6 +332,8 @@ class _VenteState extends State<Vente> {
                     ],
                   ),
                   SizedBox(height: 20),
+
+                  // Affichage des produits
                   Row(
                     children: [
                       const AutoSizeText(
@@ -107,7 +382,7 @@ class _VenteState extends State<Vente> {
                             color: Colors.black,
                           ),
                           hint: const AutoSizeText(
-                            "produit vendu",
+                            "Produit vendu",
                             style: TextStyle(color: Colors.grey),
                             maxLines: 1,
                           ),
@@ -131,6 +406,7 @@ class _VenteState extends State<Vente> {
                       Expanded(
                         flex: 1,
                         child: TextField(
+                          controller: _quantiteController,
                           keyboardType: TextInputType.number,
                           inputFormatters: <TextInputFormatter>[
                             FilteringTextInputFormatter.digitsOnly,
@@ -214,9 +490,9 @@ class _VenteState extends State<Vente> {
                       padding: EdgeInsets.all(10),
                       child: Column(
                         children: [
-                          const Row(
+                          Row(
                             children: [
-                              AutoSizeText(
+                              const AutoSizeText(
                                 "Nom:",
                                 style: TextStyle(fontSize: 20),
                                 maxLines: 1,
@@ -225,7 +501,8 @@ class _VenteState extends State<Vente> {
                               Expanded(
                                 flex: 1,
                                 child: TextField(
-                                  decoration: InputDecoration(
+                                  controller: _nomController,
+                                  decoration: const InputDecoration(
                                     hintText: 'Nom du débiteur',
                                     hintStyle: TextStyle(color: Colors.grey),
                                     enabledBorder: UnderlineInputBorder(
@@ -241,9 +518,9 @@ class _VenteState extends State<Vente> {
                               ),
                             ],
                           ),
-                          const Row(
+                          Row(
                             children: [
-                              AutoSizeText(
+                              const AutoSizeText(
                                 "Prénom:",
                                 style: TextStyle(fontSize: 20),
                                 maxLines: 1,
@@ -252,7 +529,8 @@ class _VenteState extends State<Vente> {
                               Expanded(
                                 flex: 1,
                                 child: TextField(
-                                  decoration: InputDecoration(
+                                  controller: _prenomController,
+                                  decoration: const InputDecoration(
                                     hintText: 'Prénom du débiteur',
                                     hintStyle: TextStyle(color: Colors.grey),
                                     enabledBorder: UnderlineInputBorder(
@@ -279,6 +557,7 @@ class _VenteState extends State<Vente> {
                               Expanded(
                                 flex: 1,
                                 child: TextField(
+                                  controller: _montantController,
                                   keyboardType: TextInputType.number,
                                   inputFormatters: <TextInputFormatter>[
                                     FilteringTextInputFormatter.digitsOnly,
@@ -308,7 +587,7 @@ class _VenteState extends State<Vente> {
             ),
             CustomElevatedButton(
               buttonText: "Enregistrer",
-              onPressed: () {},
+              onPressed: showConfirmationDialog,
             ),
           ],
         ),
