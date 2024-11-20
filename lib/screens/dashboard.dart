@@ -191,6 +191,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                 Container(
                   child: Expanded(
                     child: ListView.separated(
+                      shrinkWrap: true,
                       itemCount: 5,
                       itemBuilder: (context, index) {
                         return ListTile(
