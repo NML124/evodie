@@ -3,6 +3,7 @@ import 'package:evodie/Produits_Options/produits_options.dart';
 import 'package:evodie/screens/dette.dart';
 import 'package:evodie/widgets/customListTile.dart';
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 //import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
@@ -88,7 +89,47 @@ class _DashBoardPageState extends State<DashBoardPage> {
               child: Column(
                 children: [
                   Expanded(
-                    child: SfCartesianChart(
+                    child: LineChart(
+                      LineChartData(
+                        gridData: FlGridData(show: true), // Affiche les grilles
+                        titlesData: FlTitlesData(
+                          leftTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                                showTitles: true), // Titre de l'axe Y
+                          ),
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                                showTitles: true), // Titre de l'axe X
+                          ),
+                        ),
+                        borderData: FlBorderData(show: true),
+                        lineBarsData: [
+                          LineChartBarData(
+                            spots: const [
+                              FlSpot(0, 1), // Point (X=0, Y=1)
+                              FlSpot(1, 3), // Point (X=1, Y=3)
+                              FlSpot(2, 2), // Point (X=2, Y=2)
+                              FlSpot(3, 1.5), // Point (X=3, Y=1.5)
+                              FlSpot(4, 3), // Point (X=4, Y=3)
+                              FlSpot(5, 2), // Point (X=5, Y=2)
+                              FlSpot(6, 4), // Point (X=6, Y=4)
+                            ],
+                            isCurved: true, // Ligne courbée
+                            color: const Color.fromARGB(
+                                255, 33, 150, 243), // Couleur de la ligne
+                            dotData:
+                                FlDotData(show: true), // Affiche les points
+                            belowBarData: BarAreaData(
+                                show: true,
+                                color: Colors.blue.withOpacity(
+                                    0.3)), // Remplissage sous la ligne
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  /* SfCartesianChart(
                       primaryXAxis: CategoryAxis(),
                       title: const ChartTitle(
                         text: 'Ventes de la semaine',
@@ -104,8 +145,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                           dataLabelSettings: DataLabelSettings(isVisible: true),
                         ),
                       ],
-                    ),
-                  ),
+                    ), */
                 ],
               ),
             ),
