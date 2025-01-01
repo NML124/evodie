@@ -123,13 +123,8 @@ class _CommandeState extends State<Commande> {
           .limit(1)
           .single();
 
-      if (response != null) {
-        final id = response['id'];
-        return id as int?;
-      } else {
-        print('Produit non trouvé');
-        return null;
-      }
+      final id = response['id'];
+      return id as int?;
     } catch (e) {
       print('Erreur lors de la récupération de l\'ID du produit: $e');
       return null;
@@ -215,6 +210,7 @@ class _CommandeState extends State<Commande> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.sizeOf(context).height;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -252,7 +248,7 @@ class _CommandeState extends State<Commande> {
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: height * 0.02),
                 Row(
                   children: [
                     const AutoSizeText(

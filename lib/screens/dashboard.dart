@@ -1,10 +1,11 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:evodie/Constants/colors.dart';
 import 'package:evodie/Produits_Options/produits_options.dart';
 import 'package:evodie/screens/dette.dart';
 import 'package:evodie/widgets/customListTile.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+
 //import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 class DashBoardPage extends StatefulWidget {
@@ -25,6 +26,23 @@ class _DashBoardPageState extends State<DashBoardPage> {
     _SalesData('Dim', 55),
   ];
 
+  final List<double> montants = [
+    100,
+    200,
+    150,
+    300,
+    250,
+    400
+  ]; // Montants pour chaque jour
+  final List<String> jours = [
+    "Lun",
+    "Mar",
+    "Mer",
+    "Jeu",
+    "Ven",
+    "Sam"
+  ]; // Jours de la semaine
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,16 +54,18 @@ class _DashBoardPageState extends State<DashBoardPage> {
               horizontal: 8,
               vertical: 0,
             ),
-            title: const Text(
+            title: const AutoSizeText(
               "Somme actuelle",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              maxLines: 1,
             ),
-            subtitle: const Text(
+            subtitle: const AutoSizeText(
               "20.000.000 Fc",
               style: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
                   color: ColorsConstant.green),
+              maxLines: 1,
             ),
             trailing: Container(
               padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -54,15 +74,19 @@ class _DashBoardPageState extends State<DashBoardPage> {
                 borderRadius: BorderRadius.circular(15),
               ),
               child: DropdownButton(
-                hint: const Text(
+                hint: const AutoSizeText(
                   'Type',
                   style: TextStyle(color: ColorsConstant.gray),
+                  maxLines: 1,
                 ),
                 items: ProduitsOptions.listOptions.map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value,
-                        style: TextStyle(color: ColorsConstant.black)),
+                    child: AutoSizeText(
+                      value,
+                      style: TextStyle(color: ColorsConstant.black),
+                      maxLines: 1,
+                    ),
                   );
                 }).toList(),
                 value: ProduitsOptions.selectedOption,
@@ -95,34 +119,68 @@ class _DashBoardPageState extends State<DashBoardPage> {
                         titlesData: FlTitlesData(
                           leftTitles: AxisTitles(
                             sideTitles: SideTitles(
-                                showTitles: true), // Titre de l'axe Y
+                              showTitles: true,
+                              getTitlesWidget: (value, meta) {
+                                if (montants.contains(value)) {
+                                  return Text(
+                                    value.toInt().toString(),
+                                    style: TextStyle(fontSize: 12),
+                                  );
+                                }
+                                return Container(); // Cache les valeurs non nécessaires
+                              },
+                              reservedSize: 40, // Taille de l'axe gauche
+                            ),
                           ),
                           bottomTitles: AxisTitles(
                             sideTitles: SideTitles(
-                                showTitles: true), // Titre de l'axe X
+                              showTitles: true,
+                              reservedSize: 30,
+                              interval: 1, // Affiche un label tous les points
+                              getTitlesWidget: (value, meta) {
+                                int index = value.toInt();
+                                if (index >= 0 && index < jours.length) {
+                                  return Text(
+                                    jours[index],
+                                    style: TextStyle(fontSize: 12),
+                                  );
+                                }
+                                return Container(); // Cache les valeurs hors plage
+                              },
+                            ),
+                          ),
+                          topTitles: const AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: false, // Cache les titres du haut
+                            ),
+                          ),
+                          rightTitles: const AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: false, // Cache les titres de droite
+                            ),
                           ),
                         ),
-                        borderData: FlBorderData(show: true),
+                        borderData: FlBorderData(
+                          show: true,
+                          border: Border.all(color: Colors.grey),
+                        ),
                         lineBarsData: [
                           LineChartBarData(
-                            spots: const [
-                              FlSpot(0, 1), // Point (X=0, Y=1)
-                              FlSpot(1, 3), // Point (X=1, Y=3)
-                              FlSpot(2, 2), // Point (X=2, Y=2)
-                              FlSpot(3, 1.5), // Point (X=3, Y=1.5)
-                              FlSpot(4, 3), // Point (X=4, Y=3)
-                              FlSpot(5, 2), // Point (X=5, Y=2)
-                              FlSpot(6, 4), // Point (X=6, Y=4)
-                            ],
+                            spots: List.generate(
+                              montants.length,
+                              (index) =>
+                                  FlSpot(index.toDouble(), montants[index]),
+                            ),
                             isCurved: true, // Ligne courbée
                             color: const Color.fromARGB(
                                 255, 33, 150, 243), // Couleur de la ligne
                             dotData:
                                 FlDotData(show: true), // Affiche les points
                             belowBarData: BarAreaData(
-                                show: true,
-                                color: Colors.blue.withOpacity(
-                                    0.3)), // Remplissage sous la ligne
+                              show: true,
+                              color: Colors.blue.withOpacity(
+                                  0.3), // Remplissage sous la ligne
+                            ),
                           ),
                         ],
                       ),

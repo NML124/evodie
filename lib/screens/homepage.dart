@@ -2,6 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:evodie/Constants/colors.dart';
 import 'package:evodie/screens/commande.dart';
 import 'package:evodie/screens/dashboard.dart';
+import 'package:evodie/screens/historique.dart';
+import 'package:evodie/screens/mon_entreprise.dart';
 import 'package:evodie/screens/profile.dart';
 import 'package:evodie/screens/vente.dart';
 import 'package:flutter/material.dart';
@@ -14,17 +16,33 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
+  // information de l'utilisateur
+  String userName = "Jeanine Namwana";
+  String userRole = "Propriétaire";
+
+  // changement de page
+  int _currentIndex = 0; // Index de l'écran actuel
+
   final List<Widget> _screens = [
     const Center(child: DashBoardPage()),
     const Vente(),
-    const Commande()
+    const Commande(),
+    const MonEntreprise(),
   ];
 
   void _onItemTapped(int index) {
+    // Pour les autres pages, mettre à jour l'index courant
     setState(() {
       _currentIndex = index;
     });
+  }
+
+  // navigator vers la page de l'historique
+  void _onHistoriqueTapped() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const HistoriquePage()),
+    );
   }
 
   @override
@@ -39,26 +57,35 @@ class _HomePageState extends State<HomePage> {
             leading: const CircleAvatar(
               backgroundColor: ColorsConstant.green,
             ),
-            title: const Column(
+            title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const AutoSizeText(
-                  "Jeanine Namwana",
-                  style: TextStyle(
+                AutoSizeText(
+                  userName,
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                   maxLines: 1,
                 ),
-                const AutoSizeText(
-                  "Propriétaire",
-                  style: TextStyle(fontSize: 15),
+                AutoSizeText(
+                  userRole,
+                  style: const TextStyle(fontSize: 15),
                   maxLines: 1,
                 ),
               ],
             ),
             actions: [
-              GestureDetector.new(
+              IconButton(
+                onPressed: _onHistoriqueTapped,
+                icon: const Icon(
+                  Icons.history,
+                  color: ColorsConstant.black,
+                  size: 30,
+                ),
+              ),
+              // profil de l'utilisateur
+              GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
@@ -74,9 +101,9 @@ class _HomePageState extends State<HomePage> {
                       border:
                           Border.all(width: 2, color: ColorsConstant.black)),
                   child: const Icon(
-                    Icons.settings_outlined, // l'icône que vous voulez afficher
-                    size: 35,
-                    color: Colors.black, // couleur de l'icône
+                    Icons.settings_outlined, // L'icône que vous voulez afficher
+                    size: 20,
+                    color: Colors.black, // Couleur de l'icône
                   ),
                 ),
               ),
@@ -84,16 +111,22 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: _screens[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _screens,
+      ),
+// Affichage de l'écran actuel
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onItemTapped,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Dashboard'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Accueil'),
           BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart_rounded), label: 'Vente'),
           BottomNavigationBarItem(
               icon: Icon(Icons.add_shopping_cart_rounded), label: 'Commande'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.business), label: 'Mon Entreprise'),
         ],
         selectedItemColor: Color.fromARGB(255, 137, 255, 204),
         unselectedItemColor: ColorsConstant.white,
@@ -109,8 +142,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
-
-class VentePage {
-  const VentePage();
 }

@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  app_links: ^3.0.0
 
   syncfusion_flutter_charts: ^27.2.2
   fl_chart: ^0.69.0

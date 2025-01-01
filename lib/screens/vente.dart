@@ -64,7 +64,8 @@ class _VenteState extends State<Vente> {
       }
 
       final String selectedProduit = ProduitsOptions.selectedProduit ?? '';
-      final int quantiteVendu = int.tryParse(_quantiteController.text) ?? 0;
+      final double quantiteVendu =
+          double.tryParse(_quantiteController.text) ?? 0.0;
       final String selectedType = ProduitsOptions.selectedType ?? '';
 
       if (selectedProduit.isEmpty ||
@@ -131,15 +132,18 @@ class _VenteState extends State<Vente> {
         detteId = debtResponse[0]['id'] as int?;
       }
 
-      final venteResponse = await supabase.from('ventes').insert({
-        'produit_id': produitId,
-        'quantite_vendu': quantiteVendu,
-        'type_vente': selectedType,
-        'utilisateur_id': currentUser.id,
-        'dette_id': detteId,
-      }).select();
+      // Appel de la procédure stockée
+      final response = await supabase.rpc('ajouter_vente', params: {
+        'p_produit_id': produitId,
+        'p_utilisateur_id': currentUser.id,
+        'p_quantite_vendu': quantiteVendu,
+        'p_type_vente': selectedType,
+        'p_date_vente': DateTime.now().toIso8601String(),
+        'p_dette_id': detteId,
+        'p_id_vendeur': null,
+      });
 
-      if (venteResponse.isNotEmpty) {
+      if (response == null) {
         setState(() {
           isSubmitting =
               false; // Terminer le chargement lorsque l'insertion est réussie
@@ -150,10 +154,9 @@ class _VenteState extends State<Vente> {
         resetFields();
       } else {
         setState(() {
-          isSubmitting =
-              false; // Terminer le chargement en cas d'erreur d'insertion
+          isSubmitting = false; // Terminer le chargement en cas d'erreur
         });
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Erreur lors de l'enregistrement de la vente."),
         ));
       }

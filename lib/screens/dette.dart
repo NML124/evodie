@@ -13,7 +13,7 @@ class Dette extends StatefulWidget {
 }
 
 class _DetteState extends State<Dette> {
-  List<_SalesData> data = [
+  final List<_SalesData> data = [
     _SalesData('Lun', 25),
     _SalesData('Mar', 30),
     _SalesData('Mer', 28),
@@ -22,6 +22,8 @@ class _DetteState extends State<Dette> {
     _SalesData('Sam', 60),
     _SalesData('Dim', 55),
   ];
+
+  String? paymentAmount;
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +38,7 @@ class _DetteState extends State<Dette> {
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.pop(
-                      context,
-                    );
+                    Navigator.pop(context);
                   },
                   icon: const Icon(
                     Icons.arrow_back,
@@ -52,9 +52,10 @@ class _DetteState extends State<Dette> {
                 const AutoSizeText(
                   'Dette',
                   style: TextStyle(
-                      color: ColorsConstant.black,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold),
+                    color: ColorsConstant.black,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
                   maxLines: 1,
                 ),
               ],
@@ -77,9 +78,10 @@ class _DetteState extends State<Dette> {
               subtitle: const AutoSizeText(
                 "12.080.000 Fc",
                 style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: ColorsConstant.green),
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: ColorsConstant.green,
+                ),
                 maxLines: 1,
               ),
               trailing: Container(
@@ -100,31 +102,26 @@ class _DetteState extends State<Dette> {
                       value: value,
                       child: AutoSizeText(
                         value,
-                        style: TextStyle(color: ColorsConstant.black),
+                        style: const TextStyle(color: ColorsConstant.black),
                         maxLines: 1,
                       ),
                     );
                   }).toList(),
                   value: ProduitsOptions.selectedOption,
                   onChanged: (String? newValue) {
-                    setState(
-                      () {
-                        ProduitsOptions.setSelectedOption(newValue);
-                      },
-                    );
+                    setState(() {
+                      ProduitsOptions.setSelectedOption(newValue);
+                    });
                   },
-                  icon: const Icon(
-                    Icons.keyboard_arrow_down_sharp,
-                  ),
+                  icon: const Icon(Icons.keyboard_arrow_down_sharp),
                   iconSize: 25,
-                  style: TextStyle(fontSize: 18),
-                  underline: SizedBox(),
+                  style: const TextStyle(fontSize: 18),
+                  underline: const SizedBox(),
                 ),
               ),
             ),
-            // Correction du graphique
             Container(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               height: MediaQuery.of(context).size.height * 0.3,
               child: SfCartesianChart(
                 primaryXAxis: CategoryAxis(),
@@ -139,12 +136,11 @@ class _DetteState extends State<Dette> {
                     xValueMapper: (_SalesData sales, _) => sales.day,
                     yValueMapper: (_SalesData sales, _) => sales.sales,
                     name: 'Dettes',
-                    dataLabelSettings: DataLabelSettings(isVisible: true),
+                    dataLabelSettings: const DataLabelSettings(isVisible: true),
                   ),
                 ],
               ),
             ),
-
             Container(
               padding: const EdgeInsets.all(8),
               height: MediaQuery.of(context).size.height * 0.5,
@@ -156,12 +152,10 @@ class _DetteState extends State<Dette> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(
-                        0.1), // Couleur de l'ombre avec une opacité
-                    spreadRadius: 1, // La taille de l'ombre
-                    blurRadius: 3, // L'intensité du flou de l'ombre
-                    offset: const Offset(0,
-                        -3), // Décalage de l'ombre : (0, -3) pour une ombre au-dessus
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 3,
+                    offset: const Offset(0, -3),
                   ),
                 ],
               ),
@@ -171,9 +165,10 @@ class _DetteState extends State<Dette> {
                   const AutoSizeText(
                     "Débiteurs",
                     style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: ColorsConstant.black),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: ColorsConstant.black,
+                    ),
                   ),
                   const Divider(
                     color: ColorsConstant.black,
@@ -185,111 +180,126 @@ class _DetteState extends State<Dette> {
                       itemBuilder: (context, index) {
                         return CustomExpansionTile(
                           onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    backgroundColor: const Color(
-                                        0xFFFFFDF9), // Couleur de fond (adaptée à l'image)
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const AutoSizeText(
-                                          'Paiement dette',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                          maxLines: 1,
+                            showGeneralDialog(
+                              context: Navigator.of(context).overlay!.context,
+                              barrierDismissible: true,
+                              barrierLabel: MaterialLocalizations.of(context)
+                                  .modalBarrierDismissLabel,
+                              transitionDuration:
+                                  const Duration(milliseconds: 300),
+                              pageBuilder: (context, anim1, anim2) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  backgroundColor: const Color(0xFFFFFDF9),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const AutoSizeText(
+                                        'Paiement dette',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
                                         ),
-                                        const SizedBox(height: 10),
-                                        const AutoSizeText(
-                                          'Somme actuelle à payer : 70.000 Fc',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                          maxLines: 1,
+                                        maxLines: 1,
+                                      ),
+                                      const SizedBox(height: 10),
+                                      const AutoSizeText(
+                                        'Somme actuelle à payer : 70.000 Fc',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
                                         ),
-                                        const SizedBox(height: 10),
-                                        const AutoSizeText(
-                                          'Paiement de :',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.black,
-                                          ),
-                                          maxLines: 1,
+                                        maxLines: 1,
+                                      ),
+                                      const SizedBox(height: 10),
+                                      const AutoSizeText(
+                                        'Paiement de :',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black,
                                         ),
-                                        TextField(
-                                          decoration: InputDecoration(
-                                            hintText: 'Somme payée',
-                                            hintStyle: const TextStyle(
-                                              color: Colors.grey,
-                                            ),
-                                            border: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey.shade400),
-                                            ),
+                                        maxLines: 1,
+                                      ),
+                                      TextField(
+                                        decoration: InputDecoration(
+                                          hintText: 'Somme payée',
+                                          hintStyle: const TextStyle(
+                                            color: Colors.grey,
                                           ),
-                                          keyboardType: TextInputType.number,
+                                          border: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.grey.shade400),
+                                          ),
                                         ),
-                                        const SizedBox(height: 20),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                foregroundColor:
-                                                    ColorsConstant.white,
-                                                backgroundColor:
-                                                    ColorsConstant.red,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                              ),
-                                              child: const AutoSizeText(
-                                                'Annuler',
-                                                maxLines: 1,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 10),
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                // Logique de paiement ici
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                foregroundColor:
-                                                    ColorsConstant.white,
-                                                backgroundColor:
-                                                    ColorsConstant.green,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                              ),
-                                              child: const AutoSizeText(
-                                                'Payer',
-                                                maxLines: 1,
+                                        keyboardType: TextInputType.number,
+                                        onChanged: (value) {
+                                          paymentAmount = value;
+                                        },
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              foregroundColor:
+                                                  ColorsConstant.white,
+                                              backgroundColor:
+                                                  ColorsConstant.red,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                });
+                                            child: const AutoSizeText(
+                                              'Annuler',
+                                              maxLines: 1,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              // Logique de paiement ici
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              foregroundColor:
+                                                  ColorsConstant.white,
+                                              backgroundColor:
+                                                  ColorsConstant.green,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            child: const AutoSizeText(
+                                              'Payer',
+                                              maxLines: 1,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              transitionBuilder:
+                                  (context, anim1, anim2, child) {
+                                return ScaleTransition(
+                                  scale: anim1,
+                                  child: child,
+                                );
+                              },
+                            );
                           },
                           title: 'Personne ${index + 1}',
                           amount: '12.000.000 Fc',

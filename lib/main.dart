@@ -1,4 +1,3 @@
-import 'package:evodie/screens/homepage.dart';
 import 'package:evodie/screens/loginpage.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
