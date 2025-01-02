@@ -219,7 +219,7 @@ class _VenteState extends State<Vente> {
                   ? SizedBox(
                       height: MediaQuery.of(context).size.height *
                           0.15, // Hauteur similaire au contenu précédent
-                      child: Column(
+                      child: const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
                           CircularProgressIndicator(

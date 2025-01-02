@@ -1,4 +1,5 @@
 import 'package:evodie/screens/loginpage.dart';
+import 'package:evodie/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -16,13 +17,39 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: "Gestion Depot",
       debugShowCheckedModeBanner: false,
-      home: AuthPage(),
+      home: const InitialPage(),
     );
+  }
+}
+
+class InitialPage extends StatelessWidget {
+  const InitialPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _checkSession(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasData && snapshot.data == true) {
+          return const HomePage();
+        } else {
+          return const AuthPage();
+        }
+      },
+    );
+  }
+
+  Future<bool> _checkSession() async {
+    final session = Supabase.instance.client.auth.currentSession;
+    return session != null;
   }
 }

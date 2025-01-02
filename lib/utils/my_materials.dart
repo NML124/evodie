@@ -9,6 +9,8 @@ export 'package:evodie/screens/profile.dart';
 export 'package:evodie/screens/vente.dart';
 export 'package:evodie/screens/dette.dart';
 export 'package:evodie/Produits_Options/produits_options.dart';
+export 'package:evodie/screens/mes_produits.dart';
+export 'package:evodie/screens/mes_employes.dart';
 
 // constants
 export 'package:evodie/Constants/strings.dart';
