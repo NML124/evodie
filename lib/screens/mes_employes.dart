@@ -1,3 +1,4 @@
+import 'package:evodie/utils/my_materials.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -166,9 +167,14 @@ class _EmployePageState extends State<EmployePage> {
     return Scaffold(
       appBar: AppBar(
         title: const AutoSizeText('Gestion des Employés'),
+        backgroundColor: ColorsConstant.green,
+        foregroundColor: ColorsConstant.white,
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: CircularProgressIndicator(
+              color: ColorsConstant.green,
+            ))
           : ListView.builder(
               itemCount: employees.length,
               itemBuilder: (context, index) {
@@ -176,7 +182,32 @@ class _EmployePageState extends State<EmployePage> {
                 return Dismissible(
                   key: ValueKey(employee['id']),
                   direction: DismissDirection.endToStart,
-                  onDismissed: (_) => _deleteEmployee(employee['id']),
+                  onDismissed: (_) {
+                    showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                              title: const Text('Confirmation'),
+                              content: const Text(
+                                  'Voulez-vous vraiment supprimer cet employé ?'),
+                              actions: [
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                      foregroundColor: ColorsConstant.green),
+                                  child: const Text('Annuler'),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                      foregroundColor: ColorsConstant.red),
+                                  child: const Text('Supprimer'),
+                                  onPressed: () {
+                                    _deleteEmployee(employee['id']);
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+                            ));
+                  },
                   background: Container(
                     color: Colors.red,
                     alignment: Alignment.centerRight,
@@ -199,6 +230,8 @@ class _EmployePageState extends State<EmployePage> {
               },
             ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: ColorsConstant.green,
+        foregroundColor: ColorsConstant.white,
         onPressed: _addEmployee,
         child: const Icon(Icons.add),
       ),

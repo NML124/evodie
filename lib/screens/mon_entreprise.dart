@@ -211,7 +211,14 @@ class _MonEntrepriseState extends State<MonEntreprise> {
                   ),
                 ),
                 trailing: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EmployePage(),
+                      ),
+                    );
+                  },
                   icon: const Icon(
                     Icons.keyboard_arrow_right,
                     color: ColorsConstant.black,
