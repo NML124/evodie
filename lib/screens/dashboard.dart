@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:evodie/Constants/colors.dart';
 import 'package:evodie/Produits_Options/produits_options.dart';
 import 'package:evodie/screens/dette.dart';
+import 'package:evodie/utils/my_materials.dart';
 import 'package:evodie/widgets/customListTile.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -43,6 +44,138 @@ class _DashBoardPageState extends State<DashBoardPage> {
     "Sam"
   ]; // Jours de la semaine
 
+  final SupabaseClient supabase = Supabase.instance.client;
+  List<Map<String, dynamic>> produits = [];
+  double totalSomme = 0;
+  double totalBenefice = 0;
+  double totalPerte = 0;
+  double totalDette = 0;
+  String selectedPeriod = "hebdo";
+  final List<String> periodOptions = ["hebdo", "mensuel", "annuel"];
+  List<Map<String, dynamic>> products = [];
+  bool isLoading = true;
+  late String userId;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+    _fetchUserId();
+  }
+
+  Future<void> _fetchUserId() async {
+    final session = supabase.auth.currentSession;
+    if (session != null) {
+      userId = session.user.id;
+      await _fetchProducts();
+    } else {
+      Navigator.of(context).pushReplacementNamed('/login');
+    }
+  }
+
+  Future<void> _fetchProducts() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response = await supabase
+          .from('produits')
+          .select()
+          .eq('utilisateur_id', userId)
+          .order('date_ajout', ascending: false);
+
+      setState(() {
+        products = List<Map<String, dynamic>>.from(response);
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Erreur lors du chargement des produits: $e")),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _fetchData() async {
+    try {
+      // Récupération des produits disponibles pour l'utilisateur connecté
+      final userId = supabase.auth.currentUser?.id;
+      if (userId == null) {
+        throw Exception('Utilisateur non connecté');
+      }
+
+      final produitsResponse =
+          await supabase.from('produits').select().eq('utilisateur_id', userId);
+
+      final detteResponse = await supabase
+          .from('dettes')
+          .select('montant_dette')
+          .eq('utilisateur_id', userId);
+
+      if (produitsResponse == null || detteResponse == null) {
+        throw Exception(
+            'Erreur dans la récupération des données depuis Supabase');
+      }
+
+      // Transformation des données récupérées
+      final produitData = List<Map<String, dynamic>>.from(produitsResponse);
+      final detteData = List<Map<String, dynamic>>.from(detteResponse);
+
+      double somme = 0;
+      double benefice = 0;
+      double perte = 0;
+      double dette = detteData.fold<double>(
+        0,
+        (sum, item) => sum + (item['montant_dette'] ?? 0),
+      );
+
+      for (final produit in produitData) {
+        final stock = produit['stock'] ?? 0;
+        final prixUnitaire = produit['prix_unitaire'] ?? 0;
+        final pourcentageBenefice =
+            (produit['pourcentage_benefice'] ?? 0) / 100;
+
+        somme += stock * prixUnitaire;
+        benefice += stock * prixUnitaire * pourcentageBenefice;
+        // perte += stock * produit['prix_acquisition'] - stock * prixUnitaire;
+      }
+
+      // Mise à jour de l'état
+      setState(() {
+        produits = produitData;
+        totalSomme = somme;
+        totalBenefice = benefice;
+        totalPerte = perte;
+        totalDette = dette;
+      });
+    } catch (e) {
+      debugPrint('Erreur lors de la récupération des données : $e');
+    }
+  }
+
+  void _changePeriod(String? newPeriod) {
+    if (newPeriod != null) {
+      setState(() {
+        selectedPeriod = newPeriod;
+      });
+      _fetchData(); // Recharge les données en fonction de la période sélectionnée
+    }
+  }
+
+  String formatNumber(double number) {
+    if (number >= 1e9) {
+      return "${(number / 1e9).toStringAsFixed(1)}B"; // Milliards
+    } else if (number >= 1e6) {
+      return "${(number / 1e6).toStringAsFixed(1)}M"; // Millions
+    } else if (number >= 1e3) {
+      return "${(number / 1e3).toStringAsFixed(1)}K"; // Milliers
+    } else {
+      return number.toStringAsFixed(0); // Nombre normal
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,9 +192,9 @@ class _DashBoardPageState extends State<DashBoardPage> {
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               maxLines: 1,
             ),
-            subtitle: const AutoSizeText(
-              "20.000.000 Fc",
-              style: TextStyle(
+            subtitle: AutoSizeText(
+              "$totalSomme Fc",
+              style: const TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
                   color: ColorsConstant.green),
@@ -79,24 +212,18 @@ class _DashBoardPageState extends State<DashBoardPage> {
                   style: TextStyle(color: ColorsConstant.gray),
                   maxLines: 1,
                 ),
-                items: ProduitsOptions.listOptions.map((String value) {
+                items: periodOptions.map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: AutoSizeText(
                       value,
-                      style: TextStyle(color: ColorsConstant.black),
+                      style: const TextStyle(color: ColorsConstant.black),
                       maxLines: 1,
                     ),
                   );
                 }).toList(),
-                value: ProduitsOptions.selectedOption,
-                onChanged: (String? newValue) {
-                  setState(
-                    () {
-                      ProduitsOptions.setSelectedOption(newValue);
-                    },
-                  );
-                },
+                value: selectedPeriod,
+                onChanged: _changePeriod,
                 icon: const Icon(
                   Icons.keyboard_arrow_down_sharp,
                 ),
@@ -208,19 +335,19 @@ class _DashBoardPageState extends State<DashBoardPage> {
               ),
             ),
           ),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomListTile(
                 icon: Icons.arrow_drop_up_rounded,
-                title: "12M Fc",
+                title: "${formatNumber(totalBenefice)} Fc",
                 subtitle: 'Bénéfice',
                 colorTitle: ColorsConstant.green,
                 colorSubtitle: ColorsConstant.gray,
               ),
               CustomListTile(
                 icon: Icons.arrow_drop_down_rounded,
-                title: "1.000 Fc",
+                title: "${formatNumber(totalPerte)} Fc",
                 subtitle: "Perte",
                 colorTitle: ColorsConstant.red,
                 colorSubtitle: ColorsConstant.gray,
@@ -236,12 +363,12 @@ class _DashBoardPageState extends State<DashBoardPage> {
                 ),
               );
             },
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CustomListTile(
                   icon: Icons.monetization_on_outlined,
-                  title: "12M Fc",
+                  title: "${formatNumber(totalDette)} Fc",
                   subtitle: "Dette",
                   colorTitle: ColorsConstant.black,
                   colorSubtitle: ColorsConstant.gray,
@@ -288,52 +415,63 @@ class _DashBoardPageState extends State<DashBoardPage> {
                 ),
                 Container(
                   child: Expanded(
-                    child: ListView.separated(
-                      shrinkWrap: true,
-                      itemCount: 5,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          contentPadding: EdgeInsets.symmetric(vertical: 0),
-                          dense: true,
-                          leading: const CircleAvatar(
-                            radius: 20,
-                            backgroundColor: ColorsConstant.green,
-                          ),
-                          title: Text(
-                            "Produit ${index + 1}",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
+                    child: isLoading
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                            color: ColorsConstant.green,
+                          ))
+                        : ListView.separated(
+                            shrinkWrap: true,
+                            itemCount: products.length,
+                            itemBuilder: (context, index) {
+                              final product = products[index];
+                              return ListTile(
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 0),
+                                dense: true,
+                                leading: const CircleAvatar(
+                                  radius: 20,
+                                  backgroundColor: ColorsConstant.green,
+                                ),
+                                title: AutoSizeText(
+                                  product["nom_produit"],
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                    "${product["stock"]} paquets restants"),
+                                trailing: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    AutoSizeText(
+                                        "${product['stock'] * product['prix_unitaire']} Fc"),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(
+                                          Icons.arrow_drop_up_rounded,
+                                          color: ColorsConstant.green,
+                                        ),
+                                        AutoSizeText(
+                                          "${formatNumber((product['stock'] * product['prix_unitaire']) / 100)} Fc",
+                                          style: const TextStyle(
+                                            color: ColorsConstant.green,
+                                          ),
+                                          maxLines: 1,
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                            separatorBuilder: (context, index) => const Divider(
+                              color: ColorsConstant.black,
+                              thickness: 1,
                             ),
                           ),
-                          subtitle: Text("2 paquets restants"),
-                          trailing: const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text("15.000.000 Fc"),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.arrow_drop_up_rounded,
-                                    color: ColorsConstant.green,
-                                  ),
-                                  Text(
-                                    "500 Fc",
-                                    style:
-                                        TextStyle(color: ColorsConstant.green),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        );
-                      },
-                      separatorBuilder: (context, index) => const Divider(
-                        color: ColorsConstant.black,
-                        thickness: 1,
-                      ),
-                    ),
                   ),
                 ),
               ],

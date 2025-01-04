@@ -13,7 +13,7 @@ class HistoriquePage extends StatefulWidget {
 class _HistoriquePageState extends State<HistoriquePage> {
   int _selectedIndex = 0;
 
-  final List<String> _items = ['COMMANDE', 'LIVRAISON'];
+  final List<String> _items = ['VENTE', 'LIVRAISON'];
   List<Map<String, Object?>> _ventes = [];
   List<Map<String, Object?>> _livraisons = [];
   bool _isLoading = true;
@@ -83,7 +83,7 @@ class _HistoriquePageState extends State<HistoriquePage> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final width = MediaQuery.sizeOf(context).width;
     return Scaffold(
       appBar: AppBar(
         title: const AutoSizeText(
@@ -103,7 +103,7 @@ class _HistoriquePageState extends State<HistoriquePage> {
         child: Column(
           children: [
             Container(
-              width: width * 1,
+              width: double.infinity,
               child: Row(
                 children: List.generate(
                   _items.length,
@@ -117,7 +117,7 @@ class _HistoriquePageState extends State<HistoriquePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          width: width * 0.082,
+                          width: width * 0.12,
                           child: const Divider(
                             thickness: 2,
                             color: ColorsConstant.black,
@@ -128,7 +128,7 @@ class _HistoriquePageState extends State<HistoriquePage> {
                           child: AutoSizeText(
                             _items[index],
                             style: TextStyle(
-                              fontSize: _selectedIndex == index ? 22 : 16,
+                              fontSize: width * 0.053,
                               fontWeight: _selectedIndex == index
                                   ? FontWeight.bold
                                   : FontWeight.normal,
@@ -140,7 +140,7 @@ class _HistoriquePageState extends State<HistoriquePage> {
                           ),
                         ),
                         Container(
-                          width: width * 0.082,
+                          width: width * 0.118,
                           child: const Divider(
                             thickness: 2,
                             color: ColorsConstant.black,
@@ -163,7 +163,10 @@ class _HistoriquePageState extends State<HistoriquePage> {
             // _listHistorique[_selectedIndex],
             Expanded(
               child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                      color: ColorsConstant.green,
+                    ))
                   : ListView.builder(
                       itemCount: _selectedIndex == 0
                           ? _ventes.length

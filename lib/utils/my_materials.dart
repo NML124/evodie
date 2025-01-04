@@ -11,6 +11,8 @@ export 'package:evodie/screens/dette.dart';
 export 'package:evodie/Produits_Options/produits_options.dart';
 export 'package:evodie/screens/mes_produits.dart';
 export 'package:evodie/screens/mes_employes.dart';
+export 'package:evodie/screens/commande_page.dart';
+export 'package:evodie/screens/livraison_page.dart';
 
 // constants
 export 'package:evodie/Constants/strings.dart';
@@ -28,3 +30,4 @@ export 'package:fl_chart/fl_chart.dart';
 export 'package:auto_size_text/auto_size_text.dart';
 export 'package:supabase_flutter/supabase_flutter.dart';
 export 'package:syncfusion_flutter_charts/charts.dart';
+export 'package:flutter/services.dart';

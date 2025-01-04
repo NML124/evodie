@@ -93,6 +93,52 @@ class _VenteState extends State<Vente> {
         return;
       }
 
+      // Vérification du stock
+      final produitResponse = await supabase
+          .from('produits')
+          .select('stock')
+          .eq('id', produitId)
+          .single();
+
+      final int stockDisponible = produitResponse['stock'] ?? 0;
+      if (stockDisponible < quantiteVendu) {
+        setState(() {
+          isSubmitting =
+              false; // Terminer le chargement en cas de stock insuffisant
+        });
+
+        // Ferme l'AlertDialog actuel avant d'en ouvrir un autre
+        // Navigator.of(context).pop();
+
+        // Afficher un AlertDialog pour notifier le stock insuffisant
+        Future.delayed(Duration.zero, () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text(
+                  "Stock insuffisant",
+                  style: TextStyle(color: Colors.red),
+                ),
+                content: Text(
+                  "Le produit \"$selectedProduit\" n'a que $stockDisponible paquet(s) en stock.",
+                  style: const TextStyle(fontSize: 16),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("OK"),
+                  ),
+                ],
+              );
+            },
+          );
+        });
+        return;
+      }
+      // Continue avec l'enregistrement de la vente
       int? detteId;
       if (_isVisible) {
         if (_nomController.text.isEmpty ||
@@ -132,7 +178,6 @@ class _VenteState extends State<Vente> {
         detteId = debtResponse[0]['id'] as int?;
       }
 
-      // Appel de la procédure stockée
       final response = await supabase.rpc('ajouter_vente', params: {
         'p_produit_id': produitId,
         'p_utilisateur_id': currentUser.id,
