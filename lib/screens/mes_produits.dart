@@ -64,6 +64,8 @@ class _MesProduitsState extends State<MesProduits> {
         text: product?['prix_unitaire']?.toString() ?? '');
     final TextEditingController stockController =
         TextEditingController(text: product?['stock']?.toString() ?? '');
+    final TextEditingController beneficeController = TextEditingController(
+        text: product?['pourcentage_benefice']?.toString() ?? '');
 
     await showModalBottomSheet(
       context: context,
@@ -98,6 +100,12 @@ class _MesProduitsState extends State<MesProduits> {
                 decoration: const InputDecoration(labelText: 'Stock'),
                 keyboardType: TextInputType.number,
               ),
+              TextField(
+                controller: beneficeController,
+                decoration:
+                    const InputDecoration(labelText: 'Pourcentage de bénéfice'),
+                keyboardType: TextInputType.number,
+              ),
               const SizedBox(height: 16),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -107,12 +115,15 @@ class _MesProduitsState extends State<MesProduits> {
                   final String name = nameController.text;
                   final String price = priceController.text;
                   final String stock = stockController.text;
+                  final String benefice = beneficeController.text;
 
                   if (name.isEmpty ||
                       price.isEmpty ||
                       stock.isEmpty ||
+                      benefice.isEmpty ||
                       double.tryParse(price) == null ||
-                      int.tryParse(stock) == null) {
+                      int.tryParse(stock) == null ||
+                      int.tryParse(benefice) == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                           content:
@@ -128,6 +139,7 @@ class _MesProduitsState extends State<MesProduits> {
                         'prix_unitaire': double.parse(price),
                         'stock': int.parse(stock),
                         'type_vente': 'Paquet(s)',
+                        'pourcentage_benefice': int.parse(benefice),
                         'utilisateur_id': userId,
                         'date_ajout': DateTime.now().toIso8601String(),
                       });

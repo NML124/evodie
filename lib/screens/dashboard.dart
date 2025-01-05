@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:evodie/Constants/colors.dart';
-import 'package:evodie/Produits_Options/produits_options.dart';
 import 'package:evodie/screens/dette.dart';
 import 'package:evodie/utils/my_materials.dart';
 import 'package:evodie/widgets/customListTile.dart';
@@ -453,14 +452,16 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                         const Icon(
                                           Icons.arrow_drop_up_rounded,
                                           color: ColorsConstant.green,
+                                          size: 18,
                                         ),
                                         AutoSizeText(
                                           "${formatNumber((product['stock'] * product['prix_unitaire']) / 100)} Fc",
                                           style: const TextStyle(
                                             color: ColorsConstant.green,
+                                            fontSize: 12,
                                           ),
                                           maxLines: 1,
-                                        )
+                                        ),
                                       ],
                                     )
                                   ],

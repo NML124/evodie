@@ -1,12 +1,4 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:evodie/Constants/colors.dart';
-import 'package:evodie/screens/commande.dart';
-import 'package:evodie/screens/dashboard.dart';
-import 'package:evodie/screens/historique.dart';
-import 'package:evodie/screens/mon_entreprise.dart';
-import 'package:evodie/screens/profile.dart';
-import 'package:evodie/screens/vente.dart';
-import 'package:flutter/material.dart';
+import 'package:evodie/utils/my_materials.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,13 +8,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // information de l'utilisateur
-  String userName = "Jeanine Namwana";
+  // Variables de l'utilisateur
+  String userName = "";
   String userRole = "Propriétaire";
+  final supabase = Supabase.instance.client;
+  String? userId;
 
-  // changement de page
-  int _currentIndex = 0; // Index de l'écran actuel
+  // Index de l'écran actuel
+  int _currentIndex = 0;
 
+  // Écrans de l'application
   final List<Widget> _screens = [
     const Center(child: DashBoardPage()),
     const Vente(),
@@ -30,14 +25,51 @@ class _HomePageState extends State<HomePage> {
     const MonEntreprise(),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    // Appel à la récupération des données utilisateur
+    _fetchUserId();
+  }
+
+  Future<void> _fetchUserId() async {
+    final session = supabase.auth.currentSession;
+    if (session != null) {
+      userId = session.user.id;
+      await _fetchUserData();
+    } else {
+      Navigator.of(context).pushReplacementNamed('/login');
+    }
+  }
+
+  // Fonction pour récupérer les données utilisateur depuis Supabase
+  Future<void> _fetchUserData() async {
+    try {
+      final response = await supabase
+          .from('utilisateurs') // Table utilisateur
+          .select('nom_utilisateur')
+          .eq('id', userId!) // Filtre par user_id
+          .single(); // Récupérer une seule ligne
+
+      if (response != null) {
+        setState(() {
+          userName =
+              response['nom_utilisateur']; // Assignez le nom d'utilisateur
+        });
+      }
+    } catch (error) {
+      print("Erreur lors de la récupération des données utilisateur : $error");
+    }
+  }
+
+  // Changement de page
   void _onItemTapped(int index) {
-    // Pour les autres pages, mettre à jour l'index courant
     setState(() {
       _currentIndex = index;
     });
   }
 
-  // navigator vers la page de l'historique
+  // Navigation vers la page de l'historique
   void _onHistoriqueTapped() {
     Navigator.push(
       context,
@@ -49,9 +81,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60), // Hauteur personnalisée
+        preferredSize: const Size.fromHeight(60),
         child: Padding(
-          padding: const EdgeInsets.all(8), // Padding horizontal
+          padding: const EdgeInsets.all(8),
           child: AppBar(
             elevation: 0,
             leading: const CircleAvatar(
@@ -61,7 +93,7 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AutoSizeText(
-                  userName,
+                  userName.isNotEmpty ? userName : "Chargement...",
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -84,7 +116,6 @@ class _HomePageState extends State<HomePage> {
                   size: 30,
                 ),
               ),
-              // profil de l'utilisateur
               GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -101,9 +132,9 @@ class _HomePageState extends State<HomePage> {
                       border:
                           Border.all(width: 2, color: ColorsConstant.black)),
                   child: const Icon(
-                    Icons.settings_outlined, // L'icône que vous voulez afficher
+                    Icons.settings_outlined,
                     size: 20,
-                    color: Colors.black, // Couleur de l'icône
+                    color: Colors.black,
                   ),
                 ),
               ),
@@ -115,7 +146,6 @@ class _HomePageState extends State<HomePage> {
         index: _currentIndex,
         children: _screens,
       ),
-// Affichage de l'écran actuel
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onItemTapped,
@@ -128,7 +158,7 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
               icon: Icon(Icons.business), label: 'Mon Entreprise'),
         ],
-        selectedItemColor: Color.fromARGB(255, 137, 255, 204),
+        selectedItemColor: const Color.fromARGB(255, 137, 255, 204),
         unselectedItemColor: ColorsConstant.white,
         backgroundColor: ColorsConstant.green,
         type: BottomNavigationBarType.fixed,
