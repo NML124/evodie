@@ -63,10 +63,10 @@ class _HistoriquePageState extends State<HistoriquePage> {
 
       // Récupération des livraisons de l'utilisateur connecté
       final livraisonsResponse = await Supabase.instance.client
-          .from('commandes')
+          .from('livraisons')
           .select('*, produits(nom_produit)')
           .eq('utilisateur_id', _userId!) // Filtrer par user_id
-          .order('date_commande', ascending: false);
+          .order('date_livraison', ascending: false);
 
       setState(() {
         _ventes = List<Map<String, Object?>>.from(ventesResponse);
@@ -113,48 +113,50 @@ class _HistoriquePageState extends State<HistoriquePage> {
                         _selectedIndex = index;
                       });
                     },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: width * 0.12,
-                          child: const Divider(
-                            thickness: 2,
-                            color: ColorsConstant.black,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: AutoSizeText(
-                            _items[index],
-                            style: TextStyle(
-                              fontSize: width * 0.053,
-                              fontWeight: _selectedIndex == index
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                              color: _selectedIndex == index
-                                  ? Colors.black
-                                  : Colors.grey,
-                            ),
-                            maxLines: 1,
-                          ),
-                        ),
-                        Container(
-                          width: width * 0.118,
-                          child: const Divider(
-                            thickness: 2,
-                            color: ColorsConstant.black,
-                          ),
-                        ),
-                        /* if (_selectedIndex == index)
+                    child: SingleChildScrollView(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
                           Container(
-                            margin: EdgeInsets.only(top: 5),
-                            height: 2,
-                            width: 80,
-                            color: Colors.black,
-                          
-                          ), */
-                      ],
+                            width: width * 0.12,
+                            child: const Divider(
+                              thickness: 2,
+                              color: ColorsConstant.black,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: AutoSizeText(
+                              _items[index],
+                              style: TextStyle(
+                                fontSize: width * 0.05,
+                                fontWeight: _selectedIndex == index
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: _selectedIndex == index
+                                    ? Colors.black
+                                    : Colors.grey,
+                              ),
+                              maxLines: 1,
+                            ),
+                          ),
+                          Container(
+                            width: width * 0.118,
+                            child: const Divider(
+                              thickness: 2,
+                              color: ColorsConstant.black,
+                            ),
+                          ),
+                          /* if (_selectedIndex == index)
+                            Container(
+                              margin: EdgeInsets.only(top: 5),
+                              height: 2,
+                              width: 80,
+                              color: Colors.black,
+                            
+                            ), */
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -176,35 +178,52 @@ class _HistoriquePageState extends State<HistoriquePage> {
                             ? _ventes[index]
                             : _livraisons[index];
 
-                        return ListTile(
-                          title: Text(
-                            _selectedIndex ==
-                                    0 // Vérifie si on est dans les ventes
-                                ? (data['produits'] is Map<String, Object?>
-                                    ? (data['produits'] as Map<String,
-                                                Object?>)['nom_produit']
-                                            ?.toString() ??
-                                        'Aucun produit'
-                                    : 'Aucun produit')
-                                : (data['produits'] is Map<String, Object?>
-                                    ? (data['produits'] as Map<String,
-                                                Object?>)['nom_produit']
-                                            ?.toString() ??
-                                        'Aucun produit'
-                                    : 'Aucun produit'),
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            color: ColorsConstant.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
                           ),
-                          subtitle: Text(
-                            _selectedIndex == 0
-                                ? (data['date_vente']?.toString() ??
-                                    'Date inconnue')
-                                : (data['date_commande']?.toString() ??
-                                    'Date inconnue'), // Utilisation de date_commande pour les livraisons
-                          ),
-                          trailing: AutoSizeText(
-                            _selectedIndex == 0
-                                ? (data['quantite_vendu']?.toString() ?? '0')
-                                : (data['quantite_commande']?.toString() ??
-                                    '0'), // Utilisation de quantite_livree pour les livraisons
+                          child: ListTile(
+                            title: AutoSizeText(
+                              _selectedIndex ==
+                                      0 // Vérifie si on est dans les ventes
+                                  ? (data['produits'] is Map<String, Object?>
+                                      ? (data['produits'] as Map<String,
+                                                  Object?>)['nom_produit']
+                                              ?.toString() ??
+                                          'Aucun produit'
+                                      : 'Aucun produit')
+                                  : (data['produits'] is Map<String, Object?>
+                                      ? (data['produits'] as Map<String,
+                                                  Object?>)['nom_produit']
+                                              ?.toString() ??
+                                          'Aucun produit'
+                                      : 'Aucun produit'),
+                              maxLines: 1,
+                            ),
+                            subtitle: Text(
+                              _selectedIndex == 0
+                                  ? (data['date_vente']?.toString() ??
+                                      'Date inconnue')
+                                  : (data['date_livraison']?.toString() ??
+                                      'Date inconnue'), // Utilisation de date_commande pour les livraisons
+                            ),
+                            trailing: AutoSizeText(
+                              _selectedIndex == 0
+                                  ? (data['quantite_vendu']?.toString() ?? '0')
+                                  : (data['quantite_livre']?.toString() ?? '0'),
+                              maxLines:
+                                  1, // Utilisation de quantite_livree pour les livraisons
+                            ),
                           ),
                         );
                       },

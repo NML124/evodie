@@ -1,4 +1,6 @@
+import 'package:evodie/Constants/colors.dart';
 import 'package:evodie/screens/homepage.dart';
+import 'package:evodie/utils/my_materials.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -96,11 +98,18 @@ class _AuthPageState extends State<AuthPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isLogin ? 'Connexion' : 'Inscription'),
+        title: AutoSizeText(
+          _isLogin ? 'Connexion' : 'Inscription',
+          style: const TextStyle(
+              color: ColorsConstant.green, fontWeight: FontWeight.bold),
+          maxLines: 1,
+        ),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Visibility(
               visible: !_isLogin,
@@ -109,20 +118,25 @@ class _AuthPageState extends State<AuthPage> {
                 decoration: const InputDecoration(labelText: 'Nom complet'),
               ),
             ),
+            SizedBox(height: 20),
             TextField(
               controller: _emailController,
               decoration: const InputDecoration(labelText: 'Email'),
               keyboardType: TextInputType.emailAddress,
             ),
+            SizedBox(height: 20),
             TextField(
               controller: _passwordController,
               decoration: const InputDecoration(labelText: 'Mot de passe'),
               obscureText: true,
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _authenticate,
-              child: Text(_isLogin ? 'Se connecter' : 'S\'inscrire'),
+            Container(
+              width: double.infinity,
+              child: CustomElevatedButton(
+                onPressed: _authenticate,
+                buttonText: _isLogin ? 'Se connecter' : 'S\'inscrire',
+              ),
             ),
             const SizedBox(height: 10),
             TextButton(
@@ -132,7 +146,9 @@ class _AuthPageState extends State<AuthPage> {
                 });
               },
               child: Text(
-                  _isLogin ? 'Créer un compte' : 'Vous avez déjà un compte ?'),
+                _isLogin ? 'Créer un compte' : "J'ai déjà un compte !",
+                style: const TextStyle(color: ColorsConstant.green),
+              ),
             ),
             /* ElevatedButton(
               onPressed: () => signInWithProvider('google'),

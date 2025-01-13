@@ -1,3 +1,4 @@
+import 'package:evodie/Constants/colors.dart';
 import 'package:evodie/screens/loginpage.dart';
 import 'package:evodie/screens/homepage.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,26 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Gestion Depot",
+      theme: ThemeData(
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide(color: ColorsConstant.green, width: 1.5),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide(color: ColorsConstant.green, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide(color: ColorsConstant.green, width: 1.5),
+          ),
+          labelStyle: TextStyle(color: Colors.grey, fontSize: 16.0),
+          hintStyle: TextStyle(color: Colors.grey[400]),
+        ),
+      ),
       debugShowCheckedModeBanner: false,
       home: const InitialPage(),
     );

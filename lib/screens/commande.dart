@@ -70,14 +70,6 @@ class _CommandeState extends State<Commande> {
                               color: ColorsConstant.black,
                             ),
                           ),
-                          /* if (_selectedIndex == index)
-                        Container(
-                          margin: EdgeInsets.only(top: 5),
-                          height: 2,
-                          width: 80,
-                          color: Colors.black,
-                        
-                        ), */
                         ],
                       ),
                     ),

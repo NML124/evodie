@@ -145,7 +145,12 @@ class _CommandePageState extends State<CommandePage> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              title: const Text("Confirmer l'enregistrement"),
+              title: const Text("Confirmer l'enregistrement",
+                  style: TextStyle(
+                      color: ColorsConstant.green,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
+                  textAlign: TextAlign.start),
               content: isSubmitting
                   ? SizedBox(
                       height: MediaQuery.of(context).size.height * 0.15,
@@ -173,7 +178,8 @@ class _CommandePageState extends State<CommandePage> {
                           Navigator.of(context)
                               .pop(); // Ferme la boîte de dialogue sans rien faire
                         },
-                  child: const Text("Annuler"),
+                  child: const Text("Annuler",
+                      style: TextStyle(color: ColorsConstant.red)),
                 ),
                 // Bouton Confirmer
                 ElevatedButton(
@@ -194,6 +200,13 @@ class _CommandePageState extends State<CommandePage> {
                           Navigator.of(context)
                               .pop(); // Ferme la boîte de dialogue après traitement
                         },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorsConstant.green,
+                    foregroundColor: ColorsConstant.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   child: isSubmitting
                       ? const Text("Traitement en cours...")
                       : const Text("Confirmer"),

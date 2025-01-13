@@ -259,7 +259,14 @@ class _VenteState extends State<Vente> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              title: const Text("Confirmer l'enregistrement"),
+              title: const Text(
+                "Confirmer l'enregistrement",
+                style: TextStyle(
+                    color: ColorsConstant.green,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20),
+                textAlign: TextAlign.start,
+              ),
               content: isSubmitting
                   ? SizedBox(
                       height: MediaQuery.of(context).size.height *
@@ -278,6 +285,7 @@ class _VenteState extends State<Vente> {
                     )
                   : Column(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                             "Produit: ${ProduitsOptions.selectedProduit ?? 'N/A'}"),
@@ -295,7 +303,8 @@ class _VenteState extends State<Vente> {
               actions: [
                 TextButton(
                   onPressed: isSubmitting ? null : () => Navigator.pop(context),
-                  child: const Text("Annuler"),
+                  child: const Text("Annuler",
+                      style: TextStyle(color: ColorsConstant.red)),
                 ),
                 ElevatedButton(
                   onPressed: isSubmitting
@@ -315,6 +324,13 @@ class _VenteState extends State<Vente> {
                           Navigator.pop(
                               context); // Ferme le dialogue après l'opération
                         },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorsConstant.green,
+                    foregroundColor: ColorsConstant.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   child: isSubmitting
                       ? const Text("Traitement en cours...")
                       : const Text("Confirmer"),

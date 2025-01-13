@@ -90,16 +90,19 @@ class _MesProduitsState extends State<MesProduits> {
                 controller: nameController,
                 decoration: const InputDecoration(labelText: 'Nom du produit'),
               ),
+              SizedBox(height: 16),
               TextField(
                 controller: priceController,
                 decoration: const InputDecoration(labelText: 'Prix unitaire'),
                 keyboardType: TextInputType.number,
               ),
+              SizedBox(height: 16),
               TextField(
                 controller: stockController,
                 decoration: const InputDecoration(labelText: 'Stock'),
                 keyboardType: TextInputType.number,
               ),
+              SizedBox(height: 16),
               TextField(
                 controller: beneficeController,
                 decoration:
